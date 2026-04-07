@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "BetTracker Sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Auto-sync bet history from sportsbooks into BetTracker",
   "permissions": ["storage", "tabs", "scripting"],
   "host_permissions": [
@@ -11,7 +11,21 @@
     "*://*.betus.com/*",
     "*://*.bookmaker.eu/*",
     "*://*.sportsbetting.ag/*",
-    "*://*.pinnacle.com/*"
+    "*://*.pinnacle.com/*",
+    "*://*.betterodds.ag/*",
+    "*://*.heritage.bet/*",
+    "*://*.heritagesports.eu/*",
+    "*://*.betphoenix.ag/*",
+    "*://*.wagerweb.ag/*",
+    "*://*.gtbets.eu/*",
+    "*://*.everygame.eu/*",
+    "*://*.intertops.eu/*",
+    "*://*.5dimes.eu/*",
+    "*://*.jazzsports.ag/*",
+    "*://*.americanwager.com/*",
+    "*://*.legendssports.eu/*",
+    "*://*.spreads.com/*",
+    "*://*.offshore.ag/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -59,6 +73,26 @@
     {
       "matches": ["*://*.pinnacle.com/*"],
       "js": ["content_scripts/pinnacle.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://*.betterodds.ag/*",
+        "*://*.heritage.bet/*",
+        "*://*.heritagesports.eu/*",
+        "*://*.betphoenix.ag/*",
+        "*://*.wagerweb.ag/*",
+        "*://*.gtbets.eu/*",
+        "*://*.everygame.eu/*",
+        "*://*.intertops.eu/*",
+        "*://*.5dimes.eu/*",
+        "*://*.jazzsports.ag/*",
+        "*://*.americanwager.com/*",
+        "*://*.legendssports.eu/*",
+        "*://*.spreads.com/*",
+        "*://*.offshore.ag/*"
+      ],
+      "js": ["content_scripts/dgs.js"],
       "run_at": "document_idle"
     }
   ]

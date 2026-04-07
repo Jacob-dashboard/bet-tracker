@@ -12,6 +12,34 @@ Auto-syncs your bet history from offshore and regulated sportsbooks into the [Be
 
 ## Supported Sportsbooks
 
+### Offshore — DGS Platform
+
+These 14 books all run on the **DGS (Digital Sports Technologies)** white-label platform and share one scraper (`content_scripts/dgs.js`).
+
+| Book            | Domain              | Bet History Page              |
+|-----------------|---------------------|-------------------------------|
+| BetterOdds      | betterodds.ag       | /report/ or /account/bet-history |
+| Heritage Sports | heritagesports.eu   | /report/ or /account/bet-history |
+| Heritage        | heritage.bet        | /report/ or /account/bet-history |
+| BetPhoenix      | betphoenix.ag       | /report/ or /account/bet-history |
+| WagerWeb        | wagerweb.ag         | /report/ or /account/bet-history |
+| GTBets          | gtbets.eu           | /report/ or /account/bet-history |
+| Everygame       | everygame.eu        | /report/ or /account/bet-history |
+| Intertops       | intertops.eu        | /report/ or /account/bet-history |
+| 5Dimes          | 5dimes.eu           | /report/ or /account/bet-history |
+| JazzSports      | jazzsports.ag       | /report/ or /account/bet-history |
+| AmericanWager   | americanwager.com   | /report/ or /account/bet-history |
+| Legends Sports  | legendssports.eu    | /report/ or /account/bet-history |
+| Spreads         | spreads.com         | /report/ or /account/bet-history |
+| Offshore        | offshore.ag         | /report/ or /account/bet-history |
+
+**DGS platform fingerprints:**
+- Login: `data-action="login"`, `data-field="user"`, `data-security="form"`
+- JS: `<script data-main="app/setting/config-login" src="js/require.js"></script>`
+- File paths: `sites/[bookname]/images/...`
+
+### Offshore — Other
+
 | Book              | Domain             | Bet History Page          |
 |-------------------|--------------------|---------------------------|
 | Bovada            | bovada.lv          | /sports/my-bets           |
@@ -20,6 +48,11 @@ Auto-syncs your bet history from offshore and regulated sportsbooks into the [Be
 | BetUS             | betus.com          | /sports/my-bets or /account/bet-history |
 | Bookmaker         | bookmaker.eu       | /account/my-bets          |
 | Sportsbetting.ag  | sportsbetting.ag   | /account/bets             |
+
+### Sharp / Exchange
+
+| Book              | Domain             | Bet History Page          |
+|-------------------|--------------------|---------------------------|
 | Pinnacle          | pinnacle.com       | /en/betting-history       |
 
 ## How Sync Works
@@ -76,6 +109,7 @@ extension/
 ├── background.js          — Service worker: storage sync, deduplication
 ├── popup.html / .js / .css — Extension popup UI
 ├── content_scripts/
+│   ├── dgs.js             — Shared scraper for all 14 DGS platform books
 │   ├── bovada.js
 │   ├── betonline.js
 │   ├── mybookie.js

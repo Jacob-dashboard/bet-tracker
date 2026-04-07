@@ -2,15 +2,47 @@
 
 // ── Popup script ───────────────────────────────────────────────
 
-const BOOKS = [
-  { name: 'Bovada',          domain: 'bovada.lv' },
-  { name: 'BetOnline',       domain: 'betonline.ag' },
-  { name: 'MyBookie',        domain: 'mybookie.ag' },
-  { name: 'BetUS',           domain: 'betus.com' },
-  { name: 'Bookmaker',       domain: 'bookmaker.eu' },
-  { name: 'Sportsbetting.ag',domain: 'sportsbetting.ag' },
-  { name: 'Pinnacle',        domain: 'pinnacle.com' },
+const BOOK_GROUPS = [
+  {
+    group: 'Offshore \u2014 DGS Platform',
+    books: [
+      { name: 'BetterOdds',   domain: 'betterodds.ag' },
+      { name: 'Heritage Sports', domain: 'heritagesports.eu' },
+      { name: 'Heritage',     domain: 'heritage.bet' },
+      { name: 'BetPhoenix',   domain: 'betphoenix.ag' },
+      { name: 'WagerWeb',     domain: 'wagerweb.ag' },
+      { name: 'GTBets',       domain: 'gtbets.eu' },
+      { name: 'Everygame',    domain: 'everygame.eu' },
+      { name: 'Intertops',    domain: 'intertops.eu' },
+      { name: '5Dimes',       domain: '5dimes.eu' },
+      { name: 'JazzSports',   domain: 'jazzsports.ag' },
+      { name: 'AmericanWager',domain: 'americanwager.com' },
+      { name: 'Legends Sports',domain: 'legendssports.eu' },
+      { name: 'Spreads',      domain: 'spreads.com' },
+      { name: 'Offshore',     domain: 'offshore.ag' },
+    ],
+  },
+  {
+    group: 'Offshore \u2014 Other',
+    books: [
+      { name: 'Bovada',          domain: 'bovada.lv' },
+      { name: 'BetOnline',       domain: 'betonline.ag' },
+      { name: 'MyBookie',        domain: 'mybookie.ag' },
+      { name: 'BetUS',           domain: 'betus.com' },
+      { name: 'Bookmaker',       domain: 'bookmaker.eu' },
+      { name: 'Sportsbetting.ag',domain: 'sportsbetting.ag' },
+    ],
+  },
+  {
+    group: 'Sharp / Exchange',
+    books: [
+      { name: 'Pinnacle',        domain: 'pinnacle.com' },
+    ],
+  },
 ];
+
+// Flat list for lookup convenience
+const BOOKS = BOOK_GROUPS.flatMap(g => g.books);
 
 async function getActiveDomains() {
   return new Promise(resolve => {
@@ -46,32 +78,39 @@ async function getTotalBets() {
 function renderBooks(activeDomains, syncMeta, container) {
   container.innerHTML = '';
 
-  for (const book of BOOKS) {
-    const isActive = [...activeDomains].some(d =>
-      d === book.domain || d.endsWith('.' + book.domain)
-    );
-    const meta = syncMeta[book.name];
+  for (const { group, books } of BOOK_GROUPS) {
+    const groupHeader = document.createElement('li');
+    groupHeader.className = 'book-group-header';
+    groupHeader.textContent = group;
+    container.appendChild(groupHeader);
 
-    const li = document.createElement('li');
-    li.className = 'book-item' + (isActive ? ' active' : '');
+    for (const book of books) {
+      const isActive = [...activeDomains].some(d =>
+        d === book.domain || d.endsWith('.' + book.domain)
+      );
+      const meta = syncMeta[book.name];
 
-    const dotCls = isActive ? 'dot-active' : 'dot-inactive';
-    const countHtml = meta
-      ? `<span class="book-count">${meta.count} bets</span><span class="book-date">${meta.lastDate}</span>`
-      : `<span class="book-date">Not synced</span>`;
+      const li = document.createElement('li');
+      li.className = 'book-item' + (isActive ? ' active' : '');
 
-    li.innerHTML = `
-      <div class="book-left">
-        <span class="book-status-dot ${dotCls}"></span>
-        <div>
-          <div class="book-name">${book.name}</div>
-          <div class="book-meta">${book.domain}</div>
+      const dotCls = isActive ? 'dot-active' : 'dot-inactive';
+      const countHtml = meta
+        ? `<span class="book-count">${meta.count} bets</span><span class="book-date">${meta.lastDate}</span>`
+        : `<span class="book-date">Not synced</span>`;
+
+      li.innerHTML = `
+        <div class="book-left">
+          <span class="book-status-dot ${dotCls}"></span>
+          <div>
+            <div class="book-name">${book.name}</div>
+            <div class="book-meta">${book.domain}</div>
+          </div>
         </div>
-      </div>
-      <div class="book-right">${countHtml}</div>
-    `;
+        <div class="book-right">${countHtml}</div>
+      `;
 
-    container.appendChild(li);
+      container.appendChild(li);
+    }
   }
 }
 

@@ -66,6 +66,21 @@ body {
   margin-bottom: 6px;
 }
 
+/* ── Book group header ── */
+.book-group-header {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 6px 2px 2px;
+  margin-top: 4px;
+}
+
+.book-group-header:first-child {
+  margin-top: 0;
+}
+
 /* ── Books list ── */
 .books-list {
   list-style: none;
