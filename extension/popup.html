@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BetTracker Sync</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-wrap">
+    <!-- Header -->
+    <header class="popup-header">
+      <span class="popup-icon">🎯</span>
+      <div>
+        <h1 class="popup-title">BetTracker Sync</h1>
+        <p class="popup-sub" id="total-count">Loading…</p>
+      </div>
+    </header>
+
+    <!-- Books list -->
+    <section class="books-section">
+      <h2 class="section-title">Sportsbooks</h2>
+      <ul class="books-list" id="books-list">
+        <!-- Populated by popup.js -->
+      </ul>
+    </section>
+
+    <!-- Actions -->
+    <footer class="popup-footer">
+      <button class="btn btn-primary" id="btn-open-tracker">
+        Open BetTracker
+      </button>
+      <button class="btn btn-secondary" id="btn-refresh">
+        Refresh Status
+      </button>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

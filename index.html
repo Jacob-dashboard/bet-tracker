@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BetTracker — Sports Betting Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Header ───────────────────────────────────────────── -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <svg class="logo-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <polygon points="9,1 17,6 17,12 9,17 1,12 1,6" fill="none" stroke="#58a6ff" stroke-width="1.5"/>
+          <polygon points="9,5 13,7.5 13,10.5 9,13 5,10.5 5,7.5" fill="#58a6ff" opacity="0.4"/>
+        </svg>
+        <span class="logo-text">BetTracker</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-unit-size" class="btn btn-ghost btn-sm" title="Configure unit size">
+          Unit: $<span id="unit-display">10</span>
+        </button>
+        <button id="btn-export" class="btn btn-ghost btn-sm">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v8M3 6l3.5 3.5L10 6M1 10.5v1a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export CSV
+        </button>
+        <button id="btn-add" class="btn btn-primary">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Add Bet
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Dashboard Stats ───────────────────────────────── -->
+    <section class="dashboard" aria-label="Stats overview">
+      <div class="stat-card">
+        <div class="stat-label">Total Bets</div>
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-sub" id="stat-record">0W – 0L</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Win %</div>
+        <div class="stat-value" id="stat-winpct">—</div>
+        <div class="stat-sub">graded bets</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ROI %</div>
+        <div class="stat-value" id="stat-roi">—</div>
+        <div class="stat-sub" id="stat-staked">$0 staked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total P&amp;L</div>
+        <div class="stat-value" id="stat-pnl">$0.00</div>
+        <div class="stat-sub" id="stat-pending-count">0 pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg CLV</div>
+        <div class="stat-value" id="stat-clv">—</div>
+        <div class="stat-sub" id="stat-clv-sub">no CLV data</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Units W/L</div>
+        <div class="stat-value" id="stat-units">0.0u</div>
+        <div class="stat-sub" id="stat-unit-size-label">@ $10/unit</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Streak</div>
+        <div class="stat-value" id="stat-streak">—</div>
+        <div class="stat-sub">current</div>
+      </div>
+    </section>
+
+    <!-- ── CLV Summary Card ──────────────────────────────── -->
+    <section class="clv-section">
+      <div class="clv-card">
+        <div class="clv-header">
+          <div class="clv-header-left">
+            <span class="clv-title">CLV Analysis</span>
+            <span class="clv-badge neutral" id="clv-badge">No Data</span>
+          </div>
+          <button class="clv-explain-toggle" id="clv-toggle" aria-expanded="false">What is CLV? ▾</button>
+        </div>
+        <p class="clv-message" id="clv-message">Add bets with closing line data to see your CLV analysis.</p>
+        <div class="clv-stats hidden" id="clv-stats">
+          <div class="clv-stat">
+            <span class="clv-stat-label">Avg CLV</span>
+            <span class="clv-stat-value" id="clv-avg">—</span>
+          </div>
+          <div class="clv-stat">
+            <span class="clv-stat-label">Positive CLV Rate</span>
+            <span class="clv-stat-value" id="clv-positive-pct">—</span>
+          </div>
+          <div class="clv-stat">
+            <span class="clv-stat-label">Bets with CLV</span>
+            <span class="clv-stat-value" id="clv-count">—</span>
+          </div>
+        </div>
+        <div class="clv-explainer hidden" id="clv-explainer">
+          <strong>Closing Line Value (CLV)</strong> measures whether you got a better price than where the market settled. If you bet +150 and the line closed at +120, you got positive CLV — you found value before the books adjusted. Consistently positive CLV is the strongest indicator of a sharp bettor. Formula: <code>CLV% = (close_prob − bet_prob) / bet_prob × 100</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── P&L Chart ─────────────────────────────────────── -->
+    <section class="chart-section hidden" id="chart-section">
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Cumulative P&amp;L</span>
+          <span class="chart-subtitle" id="chart-subtitle"></span>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="pnl-chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Filters ───────────────────────────────────────── -->
+    <section class="filters-section">
+      <div class="filters-bar">
+        <select id="filter-sport" class="filter-select" title="Filter by sport">
+          <option value="">All Sports</option>
+        </select>
+        <select id="filter-status" class="filter-select" title="Filter by status">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Won">Won</option>
+          <option value="Lost">Lost</option>
+          <option value="Push">Push</option>
+          <option value="Void">Void</option>
+        </select>
+        <select id="filter-sportsbook" class="filter-select" title="Filter by sportsbook">
+          <option value="">All Sportsbooks</option>
+        </select>
+        <div class="date-range">
+          <input type="date" id="filter-date-from" class="filter-input" title="From date" aria-label="From date">
+          <span class="date-sep">–</span>
+          <input type="date" id="filter-date-to" class="filter-input" title="To date" aria-label="To date">
+        </div>
+        <button id="btn-clear-filters" class="btn btn-ghost btn-sm">Clear</button>
+        <span class="filter-count hidden" id="filter-count"></span>
+      </div>
+    </section>
+
+    <!-- ── Bet Table ──────────────────────────────────────── -->
+    <section class="table-section">
+      <div class="table-wrapper">
+        <table id="bet-table" aria-label="Bet history">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="date">Date <span class="sort-icon">↕</span></th>
+              <th class="sortable" data-sort="sport">Sport <span class="sort-icon">↕</span></th>
+              <th>Event</th>
+              <th class="sortable" data-sort="betType">Type <span class="sort-icon">↕</span></th>
+              <th>Pick</th>
+              <th class="sortable th-num" data-sort="odds">Odds <span class="sort-icon">↕</span></th>
+              <th class="sortable th-num" data-sort="stake">Stake <span class="sort-icon">↕</span></th>
+              <th>Book</th>
+              <th class="sortable" data-sort="status">Status <span class="sort-icon">↕</span></th>
+              <th class="sortable th-num" data-sort="profit">P&amp;L <span class="sort-icon">↕</span></th>
+              <th class="sortable th-num" data-sort="clv">CLV% <span class="sort-icon">↕</span></th>
+              <th class="th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bet-tbody"></tbody>
+        </table>
+        <div id="empty-state" class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" opacity="0.25">
+            <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="none" stroke="#58a6ff" stroke-width="2"/>
+            <polygon points="20,10 30,15.5 30,24.5 20,30 10,24.5 10,15.5" fill="#58a6ff" opacity="0.5"/>
+          </svg>
+          <div class="empty-title">No bets yet</div>
+          <div class="empty-sub">Click <strong>Add Bet</strong> to record your first wager.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Add / Edit Bet Modal ──────────────────────────────── -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <span id="modal-title" class="modal-title">Add Bet</span>
+        <button id="modal-close" class="modal-close" aria-label="Close">✕</button>
+      </div>
+      <form id="bet-form" class="bet-form" novalidate>
+        <input type="hidden" id="bet-id">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-date">Date Placed</label>
+            <input type="date" id="f-date" required>
+          </div>
+          <div class="form-group">
+            <label for="f-sport">Sport</label>
+            <select id="f-sport" required>
+              <option value="">Select sport…</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="f-event">Game / Event</label>
+            <input type="text" id="f-event" placeholder="e.g. Chiefs vs Eagles" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-bet-type">Bet Type</label>
+            <select id="f-bet-type" required>
+              <option value="">Select type…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-pick">Team / Pick</label>
+            <input type="text" id="f-pick" placeholder="e.g. Chiefs -3.5" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-odds">Odds (American)</label>
+            <input type="number" id="f-odds" placeholder="-110" required>
+          </div>
+          <div class="form-group">
+            <label for="f-stake">Stake ($)</label>
+            <input type="number" id="f-stake" placeholder="100" step="0.01" min="0.01" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-sportsbook">Sportsbook</label>
+            <select id="f-sportsbook" required>
+              <option value="">Select book…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-status">Status</label>
+            <select id="f-status" required>
+              <option value="Pending">Pending</option>
+              <option value="Won">Won</option>
+              <option value="Lost">Lost</option>
+              <option value="Push">Push</option>
+              <option value="Void">Void</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-close-odds">
+              Closing Odds
+              <span class="label-hint">optional — for CLV</span>
+            </label>
+            <input type="number" id="f-close-odds" placeholder="-120">
+          </div>
+          <div class="form-group">
+            <label>CLV Preview</label>
+            <div id="clv-preview" class="clv-preview">—</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full">
+            <label for="f-notes">Notes <span class="label-hint">optional</span></label>
+            <textarea id="f-notes" rows="2" placeholder="Line shopping notes, reasoning, context…"></textarea>
+          </div>
+        </div>
+
+        <div class="payout-preview" id="payout-preview" style="display:none">
+          <span class="payout-label">Potential payout</span>
+          <span class="payout-value" id="payout-value">—</span>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="btn-cancel" class="btn btn-ghost">Cancel</button>
+          <button type="submit" id="btn-submit" class="btn btn-primary">Add Bet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Unit Size Modal ────────────────────────────────────── -->
+  <div id="unit-modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <span class="modal-title">Unit Size</span>
+        <button id="unit-modal-close" class="modal-close" aria-label="Close">✕</button>
+      </div>
+      <div class="unit-form">
+        <p class="unit-desc">Set the dollar value of 1 unit. Used for tracking units won/lost.</p>
+        <div class="form-group">
+          <label for="unit-input">1 Unit = $</label>
+          <input type="number" id="unit-input" min="0.01" step="0.01" value="10">
+        </div>
+        <div class="form-actions">
+          <button type="button" id="unit-cancel" class="btn btn-ghost">Cancel</button>
+          <button type="button" id="unit-save" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

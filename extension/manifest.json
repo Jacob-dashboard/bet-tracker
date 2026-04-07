@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "BetTracker Sync",
+  "version": "1.0.0",
+  "description": "Auto-sync bet history from sportsbooks into BetTracker",
+  "permissions": ["storage", "tabs", "scripting"],
+  "host_permissions": [
+    "*://*.bovada.lv/*",
+    "*://*.betonline.ag/*",
+    "*://*.mybookie.ag/*",
+    "*://*.betus.com/*",
+    "*://*.bookmaker.eu/*",
+    "*://*.sportsbetting.ag/*",
+    "*://*.pinnacle.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.bovada.lv/*"],
+      "js": ["content_scripts/bovada.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.betonline.ag/*"],
+      "js": ["content_scripts/betonline.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.mybookie.ag/*"],
+      "js": ["content_scripts/mybookie.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.betus.com/*"],
+      "js": ["content_scripts/betus.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.bookmaker.eu/*"],
+      "js": ["content_scripts/bookmaker.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.sportsbetting.ag/*"],
+      "js": ["content_scripts/sportsbetting.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.pinnacle.com/*"],
+      "js": ["content_scripts/pinnacle.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
